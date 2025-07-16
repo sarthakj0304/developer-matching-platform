@@ -1,3 +1,7 @@
 node_modules/
 .env
-.DS_Store
+dev_tinder_ui/.env
+dev_tinder_backend/.env
+.DS_store
+
+
