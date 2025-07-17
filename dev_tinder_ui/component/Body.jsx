@@ -4,14 +4,14 @@ import { Outlet, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { addUser } from "../src/utils/userSlice";
-
+const serverUrl = import.meta.env.VITE_SERVER_URL;
 const Body = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const userData = useSelector((store) => store.user);
   const fetchUser = async () => {
     try {
-      const res = await axios.get("http://localhost:5001/profile/view", {
+      const res = await axios.get(`${serverUrl}/profile/view`, {
         withCredentials: true,
       });
       dispatch(addUser(res.data));

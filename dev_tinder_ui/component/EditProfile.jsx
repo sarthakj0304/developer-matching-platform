@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { addUser } from "../src/utils/userSlice";
-
+const serverUrl = import.meta.env.VITE_SERVER_URL;
 const EditProfile = () => {
   const navigate = useNavigate();
   const userData = useSelector((store) => store.user); // Fetch user data from Redux store
@@ -53,7 +53,7 @@ const EditProfile = () => {
 
       // Send updated data to the backend
       const response = await axios.post(
-        "http://localhost:5001/profile/edit",
+        `${serverUrl}/profile/edit`,
         updatedData,
         {
           withCredentials: true,

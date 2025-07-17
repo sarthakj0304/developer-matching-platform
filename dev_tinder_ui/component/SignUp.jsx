@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+const serverUrl = import.meta.env.VITE_SERVER_URL;
 const SignUp = () => {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -31,13 +32,9 @@ const SignUp = () => {
     };
 
     try {
-      const response = await axios.post(
-        "http://localhost:5001/sign-up",
-        dataToSend,
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await axios.post(`${serverUrl}/sign-up`, dataToSend, {
+        withCredentials: true,
+      });
 
       if (response.status == 201) {
         alert("Sign-up successful!");

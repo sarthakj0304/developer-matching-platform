@@ -4,13 +4,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { addConnection } from "../src/utils/requestSlice";
 
 const Connections = () => {
+  const serverUrl = import.meta.env.VITE_SERVER_URL;
   const dispatch = useDispatch();
   const connections = useSelector((store) => store.request.connections);
 
   useEffect(() => {
     const fetchConnections = async () => {
       try {
-        const response = await axios.get("http://localhost:5001/connections", {
+        const response = await axios.get(`${serverUrl}/connections`, {
           withCredentials: true,
         });
         dispatch(addConnection(response.data.connections));
@@ -43,6 +44,10 @@ const Connections = () => {
               <h3 className="text-lg font-medium text-black">
                 {connection.firstName} {connection.lastName}
               </h3>
+              <button
+                className="mt-2 px-4 py-1 bg-blue-500 text-white rounded"
+                onClick={() => handleOpenChat(connection)}
+              ></button>
             </div>
           ))}
         </div>

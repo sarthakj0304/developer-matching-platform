@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addFeed } from "../src/utils/feedSlice";
 import Card from "./Card.jsx";
-
+const serverUrl = import.meta.env.VITE_SERVER_URL;
 const Feed = () => {
   const dispatch = useDispatch();
   const feed = useSelector((store) => store.feed);
@@ -11,7 +11,7 @@ const Feed = () => {
   const getFeed = async () => {
     try {
       if (feed && feed.length > 0) return; // Prevent unnecessary re-fetching
-      const res = await axios.get("http://localhost:5001/feed", {
+      const res = await axios.get(`${serverUrl}/feed`, {
         withCredentials: true,
       });
       dispatch(addFeed(res.data)); // Store feed data in Redux

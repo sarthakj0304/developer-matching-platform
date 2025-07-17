@@ -3,7 +3,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { addUser } from "../src/utils/userSlice";
 import { useNavigate, Link } from "react-router-dom";
-
+const serverUrl = import.meta.env.VITE_SERVER_URL;
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -14,7 +14,7 @@ const Login = () => {
   const handleLogin = async () => {
     try {
       const res = await axios.post(
-        "http://localhost:5001/login",
+        `${serverUrl}/login`,
         {
           emailId: email,
           password: password,

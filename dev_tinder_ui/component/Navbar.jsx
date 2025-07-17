@@ -3,14 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { removeUser } from "../src/utils/userSlice";
-
+const serverUrl = import.meta.env.VITE_SERVER_URL;
 const Navbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleLogout = async () => {
     try {
       const res = await axios.post(
-        "http://localhost:5001/logout",
+        `${serverUrl}/logout`,
         {},
         { withCredentials: true }
       );

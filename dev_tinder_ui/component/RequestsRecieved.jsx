@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-
+const serverUrl = import.meta.env.VITE_SERVER_URL;
 const getDefaultPhoto = (gender) => {
   if (gender && gender.toLowerCase() === "male") {
     return "https://www.strasys.uk/wp-content/uploads/2022/02/Depositphotos_484354208_S.jpg";
@@ -21,10 +21,9 @@ const RequestsReceived = () => {
 
   const fetchRequests = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:5001/requests/received",
-        { withCredentials: true }
-      );
+      const response = await axios.get(`${serverUrl}/requests/received`, {
+        withCredentials: true,
+      });
       setRequests(response.data.connectionRequests || []);
     } catch (error) {
       console.error("Error fetching requests:", error);
@@ -40,7 +39,7 @@ const RequestsReceived = () => {
 
     try {
       await axios.post(
-        `http://localhost:5001/request/recieve/${status}/${fromUserId}`,
+        `${serverUrl}/request/recieve/${status}/${fromUserId}`,
         {},
         { withCredentials: true }
       );

@@ -1,12 +1,13 @@
 import axios from "axios";
 import React from "react";
 import { useState } from "react";
+const serverUrl = import.meta.env.VITE_SERVER_URL;
 const Card = ({ user }) => {
   const [isVisible, setIsVisible] = useState(true);
   if (!user.photoURL) {
     if (user.gender && user.gender.toLowerCase() === "male") {
       user.photoURL =
-        "https://www.strasys.uk/wp-content/uploads/2022/02/Depositphotos_484354208_S.jpg";
+        "https://cdn.pixabay.com/photo/2014/04/02/10/25/man-303792_1280.png";
     } else if (user.gender && user.gender.toLowerCase() === "female") {
       user.photoURL =
         "https://t4.ftcdn.net/jpg/02/70/22/85/360_F_270228529_iDayZ2Dl4ZeDClKl7ZnLgzN5HRIvlGlK.jpg";
@@ -24,7 +25,7 @@ const Card = ({ user }) => {
         //console.log(`User ${user.firstName} removed from UI`);
       }, 300);
       const res = await axios.post(
-        "http://localhost:5001/request/send/" + st + "/" + user._id,
+        `${serverUrl}/request/send/` + st + "/" + user._id,
 
         {},
         { withCredentials: true }

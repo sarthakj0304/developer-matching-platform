@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { addUser } from "../src/utils/userSlice";
-
+const serverUrl = import.meta.env.VITE_SERVER_URL;
 const Profile = () => {
   const userData = useSelector((store) => store.user); // Fetch user data from Redux store
   console.log(userData);
@@ -12,7 +12,7 @@ const Profile = () => {
 
   const fetchUser = async () => {
     try {
-      const res = await axios.get("http://localhost:5001/profile/view", {
+      const res = await axios.get(`${serverUrl}/profile/view`, {
         withCredentials: true,
       });
       dispatch(addUser(res.data)); // Update Redux store with user data
