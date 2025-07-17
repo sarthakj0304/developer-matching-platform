@@ -33,12 +33,18 @@ requestRouter.post(
       }
 
       // If the request is ignored, just return without saving
-      if (status === "ignore") {
-        return res
-          .status(200)
-          .json({ message: `Request ignored from ${userId} to ${toUserId}` });
-      }
+      if (status == "ignore") {
+        // Save the ignore entry
+        await ConnectionRequestModel.create({
+          fromUserId: userId,
+          toUserId: toUserId,
+          status: "ignore",
+        });
 
+        return res.status(200).json({
+          message: `Request ignored from ${userId} to ${toUserId}`,
+        });
+      }
       // Check if there is already a connection
       const existingConnection = await ConnectionsMade.findOne({
         $or: [
@@ -83,7 +89,7 @@ requestRouter.post(
       // If no mutual request exists, create a new request
       const newConnectionRequest = new ConnectionRequestModel({
         fromUserId: userId,
-        toUserId,
+        toUserId: toUserId,
         status: "interested", // Set status as "interested" instead of user input
       });
 

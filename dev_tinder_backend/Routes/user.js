@@ -5,7 +5,7 @@ const { ConnectionRequestModel } = require("../models/ConnectionRequests.js");
 const User = require("../models/User.js");
 const { ConnectionsMade } = require("../models/Connections.js");
 const USER_SAFE_DATA = "firstName lastName photoURL about age gender skills";
-
+const mongoose = require("mongoose");
 userRouter.get("/requests/received", AuthenticateUser, async (req, res) => {
   try {
     const userId = req.user.id;
@@ -55,20 +55,31 @@ userRouter.get("/feed", AuthenticateUser, async (req, res) => {
   try {
     const loggedInUser = req.user;
 
-    const page = parseInt(req.query.page || 1);
-    let limit = parseInt(req.query.limit || 10);
-    limit = limit > 50 ? 50 : limit;
+    const limit = parseInt(req.query.limit) || 20;
+    const page = parseInt(req.query.page) || 1;
     const skip = (page - 1) * limit;
 
-    const connectionRequest = await ConnectionRequestModel.find({
-      $or: [{ fromUserId: loggedInUser.id }, { toUserId: loggedInUser.id }],
+    const connectionRequests = await ConnectionRequestModel.find({
+      $or: [{ fromUserId: loggedInUser._id }, { toUserId: loggedInUser._id }],
     }).select("fromUserId toUserId");
+    console.log(
+      "Connection Requests involving user:",
+      loggedInUser._id.toString()
+    );
+    connectionRequests.forEach((req) => {
+      console.log({
+        from: req.fromUserId.toString(),
+        to: req.toUserId.toString(),
+        status: req.status,
+      });
+    });
+
     const connections = await ConnectionsMade.find({
-      $or: [{ user1Id: loggedInUser.id }, { user2Id: loggedInUser.id }],
+      $or: [{ user1Id: loggedInUser._id }, { user2Id: loggedInUser._id }],
     }).select("user1Id user2Id");
 
     const hideUsersFromFeed = new Set();
-    connectionRequest.forEach((req) => {
+    connectionRequests.forEach((req) => {
       hideUsersFromFeed.add(req.fromUserId.toString());
       hideUsersFromFeed.add(req.toUserId.toString());
     });
@@ -77,19 +88,25 @@ userRouter.get("/feed", AuthenticateUser, async (req, res) => {
       hideUsersFromFeed.add(req.user2Id.toString());
     });
 
+    console.log(
+      "Users hidden due to connection requests:",
+      Array.from(hideUsersFromFeed)
+    );
+
+    const excludedUserIds = Array.from(hideUsersFromFeed).map((id) =>
+      mongoose.Types.ObjectId(id)
+    );
     const users = await User.find({
-      $and: [
-        { _id: { $nin: Array.from(hideUsersFromFeed) } },
-        { _id: { $ne: loggedInUser.id } },
-      ],
+      _id: { $nin: excludedUserIds, $ne: loggedInUser._id },
     })
       .select(USER_SAFE_DATA)
       .skip(skip)
       .limit(limit);
 
-    res.send(users);
+    res.json(users);
   } catch (error) {
     res.status(400).send("ERROR: " + error.message);
   }
 });
+
 module.exports = userRouter;
