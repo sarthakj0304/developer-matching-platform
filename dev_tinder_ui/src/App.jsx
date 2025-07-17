@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Body from "../component/Body.jsx"; // Make sure to import your components
+import Body from "../component/Body.jsx";
 import Feed from "../component/Feed.jsx";
 import { Outlet } from "react-router-dom";
 import Login from "../component/Login.jsx";

@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 const serverUrl = import.meta.env.VITE_SERVER_URL;
 const SignUp = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -38,6 +40,7 @@ const SignUp = () => {
 
       if (response.status == 201) {
         alert("Sign-up successful!");
+        return navigate("/");
       } else {
         alert("Sign-up failed.");
       }

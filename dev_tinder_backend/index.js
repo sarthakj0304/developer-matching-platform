@@ -9,12 +9,15 @@ const { Server } = require("socket.io");
 const Message = require("./models/Message");
 const http = require("http");
 const app = express();
-
+const localHost = process.env.LOCAL_HOST;
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: `${localHost}`,
     credentials: true,
+  },
+  allowRequest: (req, callback) => {
+    callback(null, true);
   },
 });
 
@@ -23,7 +26,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: `${localHost}`,
     credentials: true,
   })
 );
@@ -39,7 +42,6 @@ io.on("connection", (socket) => {
 
   socket.on("sendMessage", async (msg) => {
     const { senderId, receiverId, content } = msg;
-    console.log(msg);
 
     // Save message to DB
     const newMsg = new Message({ senderId, receiverId, content });
@@ -52,6 +54,27 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("User disconnected", socket.id);
   });
+});
+
+io.use((socket, next) => {
+  const userId = socket.handshake.auth?.userId;
+  if (!userId) {
+    console.log("Connection rejected: No userId");
+    return next(new Error("Unauthorized"));
+  }
+  socket.userId = userId;
+  next();
+});
+
+process.on("SIGINT", () => {
+  console.log("Shutting down server...");
+
+  // Disconnect all sockets
+  io.sockets.sockets.forEach((socket) => {
+    socket.disconnect(true); // Force disconnect
+  });
+
+  process.exit();
 });
 
 //routes

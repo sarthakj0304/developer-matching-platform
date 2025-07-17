@@ -81,7 +81,7 @@ userSchema.pre("save", function (next) {
   if (!this.photoURL) {
     if (this.gender && this.gender.toLowerCase() === "male") {
       this.photoURL =
-        "https://www.strasys.uk/wp-content/uploads/2022/02/Depositphotos_484354208_S.jpg";
+        "https://cdn.pixabay.com/photo/2014/04/02/10/25/man-303792_1280.png";
     } else if (this.gender && this.gender.toLowerCase() === "female") {
       this.photoURL =
         "https://t4.ftcdn.net/jpg/02/70/22/85/360_F_270228529_iDayZ2Dl4ZeDClKl7ZnLgzN5HRIvlGlK.jpg";
