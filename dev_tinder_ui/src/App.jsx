@@ -10,11 +10,12 @@ import EditProfile from "../component/EditProfile.jsx";
 import RequestsReceived from "../component/RequestsRecieved.jsx";
 import Connections from "../component/Connections.jsx";
 import SignUp from "../component/SignUp.jsx";
-
+import SocketManager from "../component/SocketManager.jsx";
 function App() {
   return (
     <>
       <Provider store={appStore}>
+        <SocketManager />
         <BrowserRouter basename="/">
           <Routes>
             {/* Public routes (no Body wrapper) */}

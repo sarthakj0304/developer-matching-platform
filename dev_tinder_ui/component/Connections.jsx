@@ -2,8 +2,11 @@ import { useEffect } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { addConnection } from "../src/utils/requestSlice";
+import ChatWindow from "./ChatWindow";
+import { useState } from "react";
 
 const Connections = () => {
+  const [activeChatUser, setActiveChatUser] = useState(null);
   const serverUrl = import.meta.env.VITE_SERVER_URL;
   const dispatch = useDispatch();
   const connections = useSelector((store) => store.request.connections);
@@ -21,6 +24,10 @@ const Connections = () => {
     };
     fetchConnections();
   }, [dispatch]);
+
+  const handleOpenChat = (connection) => {
+    setActiveChatUser(connection); // This triggers ChatWindow to render
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-800 via-purple-900 to-black p-6">
@@ -45,12 +52,20 @@ const Connections = () => {
                 {connection.firstName} {connection.lastName}
               </h3>
               <button
-                className="mt-2 px-4 py-1 bg-blue-500 text-white rounded"
+                className="mt-2 px-4 py-1 bg-blue-500 text-white rounded hover:bg-blue-700 hover:cursor-pointer transition"
                 onClick={() => handleOpenChat(connection)}
-              ></button>
+              >
+                Chat
+              </button>
             </div>
           ))}
         </div>
+      )}
+      {activeChatUser && (
+        <ChatWindow
+          user={activeChatUser}
+          onClose={() => setActiveChatUser(null)}
+        />
       )}
     </div>
   );

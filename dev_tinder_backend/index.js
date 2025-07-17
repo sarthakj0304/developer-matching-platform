@@ -39,13 +39,14 @@ io.on("connection", (socket) => {
 
   socket.on("sendMessage", async (msg) => {
     const { senderId, receiverId, content } = msg;
+    console.log(msg);
 
     // Save message to DB
     const newMsg = new Message({ senderId, receiverId, content });
     await newMsg.save();
 
     // Send to receiver (if online)
-    io.emit(`chat:${receiverId}`, newMsg); // You can also use socket.to() with rooms
+    io.emit(`chat:${receiverId}`, newMsg);
   });
 
   socket.on("disconnect", () => {
@@ -67,4 +68,4 @@ app.use("/", userRouter);
 app.use("/", messages_router);
 
 const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
