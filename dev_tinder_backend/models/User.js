@@ -39,6 +39,24 @@ const userSchema = new mongoose.Schema(
         }
       },
     },
+    github_url: {
+      type: String,
+      description: "GitHub profile URL",
+    },
+    linkedin_url: {
+      type: String,
+      description: "LinkedIn profile URL",
+    },
+    is_active: {
+      type: boolean,
+      default: true,
+      description: "Whether the developer is active on the platform",
+    },
+    last_active: {
+      type: String,
+      format: date - time,
+      description: "Last activity timestamp",
+    },
     age: {
       type: Number,
       required: false,
@@ -59,7 +77,7 @@ const userSchema = new mongoose.Schema(
         }
       },
     },
-    about: {
+    bio: {
       type: String,
       // default: "Dev is in search for someone here",
     },
