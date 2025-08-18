@@ -54,50 +54,55 @@ userRouter.get("/connections", AuthenticateUser, async (req, res) => {
 userRouter.get("/feed", AuthenticateUser, async (req, res) => {
   try {
     const loggedInUser = req.user;
+    if (!loggedInUser?.id) {
+      return res
+        .status(401)
+        .json({ message: "User not authenticated properly" });
+    }
 
     const limit = parseInt(req.query.limit) || 20;
     const page = parseInt(req.query.page) || 1;
     const skip = (page - 1) * limit;
 
     const connectionRequests = await ConnectionRequestModel.find({
-      $or: [{ fromUserId: loggedInUser._id }, { toUserId: loggedInUser._id }],
-    }).select("fromUserId toUserId");
+      $or: [{ fromUserId: loggedInUser.id }, { toUserId: loggedInUser.id }],
+    }).select("fromUserId toUserId status");
     console.log(
       "Connection Requests involving user:",
-      loggedInUser._id.toString()
+      loggedInUser.id.toString()
     );
-    connectionRequests.forEach((req) => {
-      console.log({
-        from: req.fromUserId.toString(),
-        to: req.toUserId.toString(),
-        status: req.status,
-      });
-    });
+    // connectionRequests.forEach((req) => {
+    //   console.log({
+    //     from: req.fromUserId.toString(),
+    //     to: req.toUserId.toString(),
+    //     status: req.status,
+    //   });
+    // });
 
     const connections = await ConnectionsMade.find({
-      $or: [{ user1Id: loggedInUser._id }, { user2Id: loggedInUser._id }],
+      $or: [{ user1Id: loggedInUser.id }, { user2Id: loggedInUser.id }],
     }).select("user1Id user2Id");
 
     const hideUsersFromFeed = new Set();
     connectionRequests.forEach((req) => {
-      hideUsersFromFeed.add(req.fromUserId.toString());
-      hideUsersFromFeed.add(req.toUserId.toString());
+      if (req.fromUserId) hideUsersFromFeed.add(req.fromUserId.toString());
+      if (req.toUserId) hideUsersFromFeed.add(req.toUserId.toString());
     });
     connections.forEach((req) => {
-      hideUsersFromFeed.add(req.user1Id.toString());
-      hideUsersFromFeed.add(req.user2Id.toString());
+      if (req.user1Id) hideUsersFromFeed.add(req.user1Id.toString());
+      if (req.user2Id) hideUsersFromFeed.add(req.user2Id.toString());
     });
 
-    console.log(
-      "Users hidden due to connection requests:",
-      Array.from(hideUsersFromFeed)
-    );
+    // console.log(
+    //   "Users hidden due to connection requests:",
+    //   Array.from(hideUsersFromFeed)
+    // );
 
-    const excludedUserIds = Array.from(hideUsersFromFeed).map((id) =>
-      mongoose.Types.ObjectId(id)
+    const excludedUserIds = Array.from(hideUsersFromFeed).map(
+      (id) => new mongoose.Types.ObjectId(id)
     );
     const users = await User.find({
-      _id: { $nin: excludedUserIds, $ne: loggedInUser._id },
+      _id: { $nin: excludedUserIds, $ne: loggedInUser.id },
     })
       .select(USER_SAFE_DATA)
       .skip(skip)

@@ -1,14 +1,16 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+
 const serverUrl = import.meta.env.VITE_SERVER_URL;
+
 const getDefaultPhoto = (gender) => {
-  if (gender && gender.toLowerCase() === "male") {
+  if (gender?.toLowerCase() === "male") {
     return "https://www.strasys.uk/wp-content/uploads/2022/02/Depositphotos_484354208_S.jpg";
-  } else if (gender && gender.toLowerCase() === "female") {
+  } else if (gender?.toLowerCase() === "female") {
     return "https://t4.ftcdn.net/jpg/02/70/22/85/360_F_270228529_iDayZ2Dl4ZeDClKl7ZnLgzN5HRIvlGlK.jpg";
-  } else {
-    return "https://img.freepik.com/free-vector/user-blue-gradient_78370-4692.jpg";
   }
+  return "https://img.freepik.com/free-vector/user-blue-gradient_78370-4692.jpg";
 };
 
 const RequestsReceived = () => {
@@ -36,7 +38,6 @@ const RequestsReceived = () => {
     setRequests((prev) =>
       prev.filter((req) => req.fromUserId._id !== fromUserId)
     );
-
     try {
       await axios.post(
         `${serverUrl}/request/recieve/${status}/${fromUserId}`,
@@ -49,39 +50,46 @@ const RequestsReceived = () => {
     }
   };
 
-  if (loading) return <p className="text-purple-300 text-center">Loading...</p>;
+  if (loading) {
+    return <p className="text-purple-300 text-center mt-10">Loading...</p>;
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-black p-6">
-      <div className="max-w-xl mx-auto mt-10 bg-black bg-opacity-80 rounded-2xl shadow-2xl p-6">
-        <h2 className="text-3xl font-bold text-purple-400 mb-6 text-center">
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 to-black p-6">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="max-w-xl mx-auto mt-10 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-lg p-6"
+      >
+        <h2 className="text-3xl font-bold text-purple-300 mb-6 text-center">
           Requests Received
         </h2>
         {requests.length === 0 ? (
-          <p className="text-gray-400 text-center">No connection requests.</p>
+          <p className="text-gray-300 text-center">No connection requests.</p>
         ) : (
           <div className="space-y-4">
-            {requests.map((request) => {
+            {requests.map((request, index) => {
               const user = request.fromUserId;
               const profilePic = user.photoUrl || getDefaultPhoto(user.gender);
 
               return (
-                <div
+                <motion.div
                   key={user._id}
-                  className="flex items-center justify-between bg-purple-900 bg-opacity-20 p-4 rounded-lg backdrop-blur-sm shadow-lg"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="flex items-center justify-between bg-white/5 border border-white/20 p-4 rounded-lg backdrop-blur-sm shadow-md"
                 >
                   <div className="flex items-center space-x-4">
                     <img
                       src={profilePic}
                       alt="User"
-                      className="w-12 h-12 rounded-full border-2 border-purple-500 object-cover"
+                      className="w-12 h-12 rounded-full border-2 border-purple-400 object-cover"
                     />
                     <div>
                       <p className="text-white font-semibold">
-                        {request.fromUserId.firstName}{" "}
-                        {request.fromUserId.lastName}
+                        {user.firstName} {user.lastName}
                       </p>
-
                       <p className="text-purple-300 text-sm">
                         {user.about || "No bio available."}
                       </p>
@@ -89,7 +97,7 @@ const RequestsReceived = () => {
                   </div>
                   <div className="flex space-x-2">
                     <button
-                      className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-md"
+                      className="px-3 py-1 rounded-md bg-green-500 hover:bg-green-600 transition"
                       onClick={() =>
                         handleRequest("accept", request.fromUserId._id)
                       }
@@ -97,7 +105,7 @@ const RequestsReceived = () => {
                       Accept
                     </button>
                     <button
-                      className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md"
+                      className="px-3 py-1 rounded-md bg-red-500 hover:bg-red-600 transition"
                       onClick={() =>
                         handleRequest("ignore", request.fromUserId._id)
                       }
@@ -105,12 +113,12 @@ const RequestsReceived = () => {
                       Ignore
                     </button>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
           </div>
         )}
-      </div>
+      </motion.div>
     </div>
   );
 };

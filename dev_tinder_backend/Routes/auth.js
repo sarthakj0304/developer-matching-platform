@@ -60,7 +60,10 @@ AuthRouter.post("/sign-up", async (req, res) => {
 });
 
 AuthRouter.post("/login", async (req, res) => {
+  console.log("Login route hit");
   const { emailId, password } = req.body;
+  console.log(emailId, password);
+
   try {
     const user = await User.findOne({ emailId });
 
@@ -76,6 +79,7 @@ AuthRouter.post("/login", async (req, res) => {
     res.cookie("token", token, {
       expires: new Date(Date.now() + 8 * 3600000),
     });
+
     res.status(200).json({ user });
   } catch (err) {
     res.status(500).json({ error: err.message });

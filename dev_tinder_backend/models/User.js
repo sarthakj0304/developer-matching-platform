@@ -48,13 +48,13 @@ const userSchema = new mongoose.Schema(
       description: "LinkedIn profile URL",
     },
     is_active: {
-      type: boolean,
+      type: Boolean,
       default: true,
       description: "Whether the developer is active on the platform",
     },
     last_active: {
       type: String,
-      format: date - time,
+      format: Date,
       description: "Last activity timestamp",
     },
     age: {
