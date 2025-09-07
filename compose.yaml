@@ -1,0 +1,28 @@
+services:
+  backend:
+    build:
+      context: ./dev_tinder_backend
+    container_name: dev_tinder_backend
+    env_file:
+      - ./dev_tinder_backend/.env
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./dev_tinder_backend:/usr/src/app # hot reload in dev
+      - /usr/src/app/node_modules # prevent overwriting node_modules
+    ports:
+      - "5001:5001"
+  frontend:
+    build: ./dev_tinder_ui
+    container_name: dev_tinder_ui
+    ports:
+      - "5173:5173" # React dev server
+    environment:
+      - NODE_ENV=development
+      - VITE_API_URL=http://backend:5001 # frontend calls backend
+    depends_on:
+      - backend
+    volumes:
+      - ./dev_tinder_ui/src:/usr/src/app/src
+      - ./dev_tinder_ui/component:/usr/src/app/component
+      - ./dev_tinder_ui/store:/usr/src/app/store
