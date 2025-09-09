@@ -4,6 +4,9 @@ import { useDispatch } from "react-redux";
 import { addUser } from "../src/utils/userSlice";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+
+import auth from "../src/firebase.js";
 
 const serverUrl = import.meta.env.VITE_SERVER_URL;
 
@@ -25,6 +28,34 @@ const Login = () => {
       navigate("/");
     } catch (err) {
       setError(err.response?.data?.message || "Invalid credentials");
+    }
+  };
+
+  const handleGmailLogin = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+
+      // Get the Firebase ID token
+      const idToken = await result.user.getIdToken();
+
+      // Send it to your backend
+      const res = await axios.post(
+        `${serverUrl}/gmail-login`,
+        { idToken },
+        { withCredentials: true }
+      );
+
+      dispatch(addUser(res.data.user)); // same as normal login
+      navigate("/");
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        // User not found → redirect to signup
+        const email = error.response.data.email;
+        navigate(`/sign-up?email=${encodeURIComponent(email)}`);
+      } else {
+        setError(error.message);
+      }
     }
   };
 
@@ -62,6 +93,18 @@ const Login = () => {
           className="w-full py-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 rounded-lg font-semibold text-white"
         >
           Login
+        </button>
+
+        <button
+          onClick={handleGmailLogin}
+          className="w-full py-2 mt-4 bg-red-600 hover:bg-red-700 rounded-lg font-semibold text-white flex items-center justify-center"
+        >
+          <img
+            src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+            alt="Google Icon"
+            className="w-5 h-5 mr-2"
+          />
+          Login with Gmail
         </button>
 
         <p className="text-sm text-gray-300 text-center mt-4">

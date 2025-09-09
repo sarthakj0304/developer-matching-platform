@@ -3,5 +3,5 @@ node_modules/
 dev_tinder_ui/.env
 dev_tinder_backend/.env
 .DS_store
-
+dev-match-platform-firebase-adminsdk-fbsvc-30ccea3332.json
 

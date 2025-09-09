@@ -6,6 +6,10 @@ const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const validator = require("validator");
 dotenv.config();
+const admin = require("firebase-admin");
+
+const serviceAccount = require("../dev-match-platform-firebase-adminsdk-fbsvc-30ccea3332.json");
+admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
 
 const AuthRouter = express.Router();
 
@@ -93,6 +97,46 @@ AuthRouter.post("/logout", async (req, res) => {
   });
 
   res.status(200).json({ message: "User Logged out successfully" });
+});
+
+AuthRouter.post("/gmail-login", async (req, res) => {
+  try {
+    const { idToken } = req.body;
+
+    // Verify the Firebase ID token
+    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    const uid = decodedToken.uid;
+    const email = decodedToken.email;
+
+    // Check if user exists in your database
+    let user = await User.findOne({ emailId: email });
+
+    if (!user) {
+      // Don't auto-create → tell frontend to redirect
+      return res.status(404).json({
+        message: "User not found, redirect to signup",
+        email: email,
+      });
+    }
+    if (!user.firebaseUid) {
+      // If user exists but doesn't have a Firebase UID, link it
+      user.firebaseUid = uid;
+      await user.save();
+    }
+
+    // Generate a JWT for your internal system
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1d",
+    });
+
+    res.cookie("token", token, {
+      expires: new Date(Date.now() + 8 * 3600000),
+    });
+
+    res.status(200).json({ user });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 module.exports = AuthRouter;

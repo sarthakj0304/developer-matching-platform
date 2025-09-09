@@ -7,22 +7,32 @@ services:
       - ./dev_tinder_backend/.env
     environment:
       - NODE_ENV=development
+      - FIREBASE_CONFIG_PATH=/run/secrets/firebase-key
+    secrets:
+      - firebase-key
     volumes:
       - ./dev_tinder_backend:/usr/src/app # hot reload in dev
-      - /usr/src/app/node_modules # prevent overwriting node_modules
+      - /usr/src/app/node_modules
     ports:
       - "5001:5001"
+
   frontend:
     build: ./dev_tinder_ui
     container_name: dev_tinder_ui
     ports:
-      - "5173:5173" # React dev server
+      - "5173:5173"
+    env_file:
+      - ./dev_tinder_ui/.env
     environment:
       - NODE_ENV=development
-      - VITE_API_URL=http://backend:5001 # frontend calls backend
+      - VITE_API_URL=http://backend:5001
     depends_on:
       - backend
     volumes:
       - ./dev_tinder_ui/src:/usr/src/app/src
       - ./dev_tinder_ui/component:/usr/src/app/component
       - ./dev_tinder_ui/store:/usr/src/app/store
+
+secrets:
+  firebase-key:
+    file: dev_tinder_backend/dev-match-platform-firebase-adminsdk-fbsvc-30ccea3332.json

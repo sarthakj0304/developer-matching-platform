@@ -1,16 +1,18 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 
 const serverUrl = import.meta.env.VITE_SERVER_URL;
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const emailFromParams = searchParams.get("email") || "";
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
-    emailId: "",
+    emailId: emailFromParams,
     password: "",
     age: "",
     gender: "",
