@@ -18,8 +18,7 @@ WORKDIR /usr/src/app
 # into this layer.
 RUN --mount=type=bind,source=package.json,target=package.json \
     --mount=type=bind,source=package-lock.json,target=package-lock.json \
-    --mount=type=cache,target=/root/.npm \
-    npm ci --omit=dev
+    --mount=type=cache,target=/root/.npm 
 
 # Run the application as a non-root user.
 USER node
@@ -31,4 +30,4 @@ COPY . .
 EXPOSE 5001
 
 # Run the application.
-CMD ["npx", "nodemon", "index.js"]
+CMD ["node", "index.js"]
