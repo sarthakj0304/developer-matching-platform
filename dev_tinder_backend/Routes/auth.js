@@ -8,8 +8,26 @@ const validator = require("validator");
 dotenv.config();
 const admin = require("firebase-admin");
 
-const serviceAccount = require("../dev-match-platform-firebase-adminsdk-fbsvc-30ccea3332.json");
-admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
+let serviceAccount;
+
+try {
+  // Check if FIREBASE_CONFIG_PATH env var is set
+  if (process.env.FIREBASE_CONFIG_PATH) {
+    // Read from env-provided path (Render: /etc/secrets/... , Local: ./...)
+    const serviceAccountPath = process.env.FIREBASE_CONFIG_PATH;
+    serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, "utf8"));
+  } else {
+    // Fallback for dev if you forget to set env var
+    serviceAccount = require("./dev-match-platform-firebase-adminsdk-fbsvc-30ccea3332.json");
+  }
+} catch (err) {
+  console.error("Failed to load Firebase credentials:", err);
+  process.exit(1);
+}
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
 
 const AuthRouter = express.Router();
 
