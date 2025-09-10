@@ -80,7 +80,7 @@ process.on("SIGINT", () => {
 //routes
 const AuthRouter = require("./Routes/auth.js");
 const profileRouter = require("./Routes/profile.js");
-const requestRouter = require("./routes/request.js");
+const requestRouter = require("./Routes/request.js");
 const userRouter = require("./Routes/user.js");
 const messages_router = require("./Routes/messages.js");
 
