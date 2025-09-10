@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
-
+import { Eye, EyeOff } from "lucide-react";
 const serverUrl = import.meta.env.VITE_SERVER_URL;
 
 const SignUp = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const emailFromParams = searchParams.get("email") || "";
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -62,18 +63,39 @@ const SignUp = () => {
           { name: "emailId", placeholder: "Email Address", type: "email" },
           { name: "password", placeholder: "Password", type: "password" },
           { name: "age", placeholder: "Age", type: "number" },
-        ].map((f) => (
-          <input
-            key={f.name}
-            name={f.name}
-            type={f.type || "text"}
-            placeholder={f.placeholder}
-            value={formData[f.name]}
-            onChange={handleChange}
-            className="w-full px-4 py-2 bg-white/5 border border-white/20 rounded-lg text-white focus:ring-2 focus:ring-purple-400"
-            required
-          />
-        ))}
+        ].map((f) =>
+          f.name === "password" ? (
+            <div key={f.name} className="relative">
+              <input
+                name={f.name}
+                type={showPassword ? "text" : "password"}
+                placeholder={f.placeholder}
+                value={formData[f.name]}
+                onChange={handleChange}
+                className="w-full px-4 py-2 bg-white/5 border border-white/20 rounded-lg text-white focus:ring-2 focus:ring-purple-400"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
+          ) : (
+            <input
+              key={f.name}
+              name={f.name}
+              type={f.type || "text"}
+              placeholder={f.placeholder}
+              value={formData[f.name]}
+              onChange={handleChange}
+              className="w-full px-4 py-2 bg-white/5 border border-white/20 rounded-lg text-white focus:ring-2 focus:ring-purple-400"
+              required
+            />
+          )
+        )}
 
         <select
           name="gender"

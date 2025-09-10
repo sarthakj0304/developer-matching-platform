@@ -49,8 +49,6 @@ AuthRouter.post("/sign-up", async (req, res) => {
       throw new Error("Enter a vaid first or last name");
     } else if (!validator.isEmail(emailId)) {
       throw new Error("Enter a valid Email ID");
-    } else if (!validator.isStrongPassword(password)) {
-      throw new Error("Enter a strong password");
     }
 
     //Encrypt the password
@@ -77,7 +75,7 @@ AuthRouter.post("/sign-up", async (req, res) => {
 
     res.status(201).json({ message: "User registered successfully" });
   } catch (err) {
-    res.status(400).send("ERROR:" + err.message);
+    res.status(400).send("ERROR:" + err.res.message);
   }
 });
 

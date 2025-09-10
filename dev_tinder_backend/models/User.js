@@ -33,11 +33,6 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
-      validate(value) {
-        if (!validator.isStrongPassword(value)) {
-          throw new Error("Enter Strong password :" + value);
-        }
-      },
     },
     github_url: {
       type: String,

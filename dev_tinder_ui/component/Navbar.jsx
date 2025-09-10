@@ -54,7 +54,9 @@ const Navbar = () => {
       </div>
 
       {/* Center: Logo */}
-      <span className="text-lg font-bold text-purple-100">Dev Tinder</span>
+      <span className="absolute left-1/2 transform -translate-x-1/2 text-lg font-bold text-purple-100">
+        Dev Tinder
+      </span>
 
       {/* Right: Logout */}
       <button

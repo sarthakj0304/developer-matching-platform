@@ -4,7 +4,12 @@ import { useDispatch } from "react-redux";
 import { addUser } from "../src/utils/userSlice";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import {
+  signInWithPopup,
+  GoogleAuthProvider,
+  signInWithRedirect,
+} from "firebase/auth";
+import { Eye, EyeOff } from "lucide-react";
 
 import auth from "../src/firebase.js";
 
@@ -16,6 +21,7 @@ const Login = () => {
   const [error, setError] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async () => {
     try {
@@ -78,13 +84,22 @@ const Login = () => {
           className="w-full px-4 py-2 mb-4 bg-white/5 border border-white/20 rounded-lg text-white focus:ring-2 focus:ring-purple-400"
         />
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full px-4 py-2 mb-4 bg-white/5 border border-white/20 rounded-lg text-white focus:ring-2 focus:ring-purple-400"
-        />
+        <div className="relative mb-4">
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full px-4 py-2 bg-white/5 border border-white/20 rounded-lg text-white focus:ring-2 focus:ring-purple-400"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((prev) => !prev)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+          >
+            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+          </button>
+        </div>
 
         {error && <p className="text-red-400 text-sm mb-3">{error}</p>}
 
