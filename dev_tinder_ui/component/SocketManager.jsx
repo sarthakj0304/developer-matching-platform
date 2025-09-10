@@ -20,7 +20,7 @@ const SocketManager = () => {
       socket.disconnect();
       console.log("Socket disconnected");
     };
-  }, []);
+  }, [user]);
 
   return null; // This component doesn’t render anything
 };

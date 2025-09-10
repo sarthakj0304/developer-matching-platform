@@ -37,6 +37,16 @@ mongoose
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.log(err));
 
+io.use((socket, next) => {
+  const userId = socket.handshake.auth?.userId;
+  if (!userId) {
+    console.log("Connection rejected: No userId");
+    return next(new Error("Unauthorized"));
+  }
+  socket.userId = userId;
+  next();
+});
+
 io.on("connection", (socket) => {
   console.log("User connected", socket.id);
 
@@ -54,16 +64,6 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("User disconnected", socket.id);
   });
-});
-
-io.use((socket, next) => {
-  const userId = socket.handshake.auth?.userId;
-  if (!userId) {
-    console.log("Connection rejected: No userId");
-    return next(new Error("Unauthorized"));
-  }
-  socket.userId = userId;
-  next();
 });
 
 process.on("SIGINT", () => {
