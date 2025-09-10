@@ -7,7 +7,7 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 dotenv.config();
 const admin = require("firebase-admin");
-
+const fs = require("fs");
 let serviceAccount;
 
 try {
