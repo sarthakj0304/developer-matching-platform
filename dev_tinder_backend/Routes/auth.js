@@ -8,6 +8,7 @@ const validator = require("validator");
 dotenv.config();
 const admin = require("firebase-admin");
 const fs = require("fs");
+// const { NodeNextRequest } = require("next/dist/server/base-http/node.js");
 let serviceAccount;
 
 try {
@@ -97,7 +98,10 @@ AuthRouter.post("/login", async (req, res) => {
     });
 
     res.cookie("token", token, {
+      httpOnly: true,
       expires: new Date(Date.now() + 8 * 3600000),
+      secure: true,
+      sameSite: "None",
     });
 
     res.status(200).json({ user });
@@ -147,6 +151,9 @@ AuthRouter.post("/gmail-login", async (req, res) => {
 
     res.cookie("token", token, {
       expires: new Date(Date.now() + 8 * 3600000),
+      secure: true,
+      sameSite: "None",
+      httpOnly: true,
     });
 
     res.status(200).json({ user });
