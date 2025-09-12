@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const AuthenticateUser = async (req, res, next) => {
+  console.log("origin", req.headers.origin);
   const token = req.cookies.token;
 
   // If no token, return unauthorized

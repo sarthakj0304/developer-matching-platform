@@ -9,11 +9,13 @@ const { Server } = require("socket.io");
 const Message = require("./models/Message");
 const http = require("http");
 const app = express();
-const localHost = process.env.LOCAL_HOST;
+// const localHost = process.env.LOCAL_HOST;
 const server = http.createServer(app);
+
+const allowedOrigins = [process.env.LOCAL_HOST, process.env.VITE_LOCAL_HOST];
 const io = new Server(server, {
   cors: {
-    origin: `${localHost}`,
+    origin: allowedOrigins,
     credentials: true,
   },
   allowRequest: (req, callback) => {
@@ -26,7 +28,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(
   cors({
-    origin: `${localHost}`,
+    origin: allowedOrigins,
     credentials: true,
   })
 );
