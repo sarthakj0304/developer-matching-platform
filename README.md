@@ -1,130 +1,125 @@
-This is a great request! I will create a similarly structured and detailed README for the "Developer Matching Platform" project. I'll follow the format, detail the features, technology, architecture, and installation steps, and include placeholders for where images would be most helpful.
+# Developer Matching Platform
+An online platform that connects developers with similar interests and skill sets. Built with a React frontend and a Node.js + Express + MongoDB backend, it allows users to create profiles, browse matches, and chat in real time — all within a sleek, responsive interface.
 
-Developer Matching Platform
+## Screenshots
+### Login window
 
-An online networking and hiring platform designed to connect developers with projects and companies in a fast, efficient, and interactive way. Built as a MERN stack application (MongoDB, Express, React, Node.js), it features secure user authentication and real-time chat to facilitate immediate communication and collaboration.
+*(Insert image here — e.g. ![Feed](images/feed.png))*
 
-✨ Features
+### 🧑‍💻 Dashboard / Feed  
+*(Insert image here — e.g. ![Feed](images/feed.png))*
 
-    User Authentication (Login/Signup) using JSON Web Tokens (JWT) for secure, stateful sessions.
+### 💬 Chat Window  
+*(Insert image here — e.g. ![Chat](images/chat.png))*
 
-    Developer Profiles featuring skills, experience, and project portfolios.
 
-    Matching Interface where users can browse and "match" with developers or projects based on skill compatibility.
 
-    Real-Time Chat using Socket.IO for instant messaging between matched users.
+# Features
 
-    Secure RESTful API backend for managing user data, connections, and messages.
+- User authentication using JWT (JSON Web Tokens)
+- Profile browsing and matching based on user skills and interests
+- Real-time chat using Socket.IO
+- RESTful API built with Express.js
+- NoSQL database with MongoDB for users, connections, and messages
+- Responsive UI with React and Tailwind CSS
+- Conditional rendering and dashboard for personalized experience
 
-    Responsive UI built with React and styled with Tailwind CSS.
+# Tech Stack
 
-💻 Tech Stack
+- **Frontend**: React, Tailwind CSS  
+- **Backend**: Node.js, Express.js  
+- **Database**: MongoDB (Mongoose ORM)  
+- **Authentication**: JWT (JSON Web Token)  
+- **Real-time Communication**: Socket.IO  
 
-Category	Technologies Used
-Frontend	React, Redux (or Context API), Tailwind CSS
-Backend	Node.js, Express.js (RESTful APIs)
-Database	MongoDB (NoSQL)
-Real-time	Socket.IO
-Authentication	JSON Web Tokens (JWT)
+## Installation and running
+docker compose up
+docker run
 
-⚙️ Installation and Running
+### Environment Variables
+Create a `.env` file inside the Backend directory:
 
-1. Prerequisites
+MONGO_URI=<your_mongodb_connection_string>
+JWT_SECRET=<your_jwt_secret>
+PORT=5000
 
-You must have Node.js and MongoDB installed on your system.
 
-2. Backend Setup
 
-The backend handles API requests, user authentication, and real-time connections.
+# How it works
 
-    Navigate to the backend directory:
-    Bash
+The Developer Matching Platform enables users to register, log in, browse other developers, send connection requests, and chat in real time once connected.
 
-cd Backend
+---
 
-Install dependencies:
-Bash
+## Backend (Node.js + Express.js)
 
-npm install
+### **Authentication & User Management**
+- **JWT-based Authentication**  
+  Secure login, logout, and signup using JSON Web Tokens.
+- **Google Authentication**  
+  `/gmail-login` endpoint allows OAuth-based login through Gmail.
 
-Create a .env file and configure your MongoDB connection string and JWT secret:
+### **API Endpoints**
 
-# .env example
-MONGO_URI=mongodb://127.0.0.1:27017/developer_platform
-JWT_SECRET=YOUR_RANDOM_SECRET_KEY
+| **Endpoint** | **Method** | **Description** |
+|---------------|------------|-----------------|
+| `/sign-up` | POST | Register a new user |
+| `/login` | POST | Authenticate a user and issue JWT |
+| `/logout` | POST | Logout the user (invalidate token on frontend) |
+| `/gmail-login` | POST | Login using Google OAuth |
+| `/messages/:userId/:otherUserId` | GET / POST | Fetch or send chat messages |
+| `/profile/view` | GET | View own profile |
+| `/profile/edit` | PUT | Edit profile details |
+| `/request/send/:status/:toUserId` | POST | Send connection request |
+| `/request/recieve/:status/:fromUserId` | POST | Accept or reject a received request |
+| `/requests/received` | GET | Get all pending connection requests |
+| `/connections` | GET | Get list of connected developers |
+| `/feed` | GET | Fetch list of suggested developers to connect with |
 
-Start the server:
-Bash
+### **Database Models**
+- **User**: Stores username, email, password hash, skills, bio, and profile picture.
+- **Request**: Tracks connection requests between users with status (pending, accepted, rejected).
+- **Message**: Stores chat messages, sender/receiver IDs, timestamps.
+- **Connection**: Created upon mutual acceptance of requests.
 
-    npm start
+### **Real-time Chat (Socket.IO)**
+- Enables one-on-one messaging between connected users.
+- Handles live updates for messages and connection status.
+- Socket events: `message`, `newRequest`, `connectionUpdate`.
 
-    The server will run on http://localhost:5000.
+---
 
-3. Frontend Setup
+## Frontend (React + Tailwind CSS)
 
-The frontend is the main user interface built with React.
+### **Folder Structure**
 
-    Navigate to the frontend directory:
-    Bash
+### **Component Overview**
+- **Body.jsx** – Main container that wraps Feed, Connections, or ChatWindow.  
+- **Card.jsx** – Displays developer details in feed view with action buttons (Connect/Ignore).  
+- **ChatWindow.jsx** – Real-time chat UI using Socket.IO.  
+- **Connections.jsx** – Lists connected developers and opens chat on selection.  
+- **EditProfile.jsx** – Form for editing name, skills, and bio.  
+- **Feed.jsx** – Displays discoverable developer profiles.  
+- **Login.jsx** – Login form with JWT and Google login support.  
+- **Navbar.jsx** – Navigation bar with quick links (Feed, Profile, Chat, Logout).  
+- **Profile.jsx** – Displays user’s personal information and edit option.  
+- **RequestsReceived.jsx** – Handles incoming connection requests.  
+- **SignUp.jsx** – Signup form with validation and API integration.  
+- **SocketManager.jsx** – Centralized Socket.IO connection and event handling.
 
-cd Frontend
+---
 
-Install dependencies:
-Bash
 
-npm install
 
-Start the development server:
-Bash
+---
 
-    npm run dev
 
-    The app will open on http://localhost:3000.
 
-🎨 How it Works End-to-End
+# Acknowledgements
+This project was developed as a part of full-stack web development practice.  
+Thanks to the **React**, **Express**, **MongoDB**, and **Socket.IO** communities for their comprehensive documentation and examples.
 
-Backend Architecture (Node.js/Express)
+# Licence
+This project is for personal/educational use only.  
+All rights reserved. Commercial use is prohibited.
 
-    Models:
-
-        User.js: Defines the schema for developer profiles, including skills and portfolio links.
-
-        Connection.js: Stores pairs of matched users.
-
-        Message.js: Stores chat history for each connection.
-
-    Routes:
-
-        /api/auth: Handles user registration, login, and token generation.
-
-        /api/users: Manages profile creation, viewing, and updating.
-
-        /api/match: Logic for finding compatible developers and registering a 'swipe' or 'match'.
-
-    Real-Time Layer: Socket.IO is initialized alongside the Express server to listen for and emit events related to new messages or online status changes.
-
-Frontend Flow (React)
-
-    Authentication: User enters credentials on the Login or Signup page.
-
-    State Management: User data and authentication tokens are stored using Redux/Context API for global access.
-
-    Matching Dashboard: The user views the main page (Home/Dashboard) where profiles are conditionally rendered based on matching logic.
-
-    Real-Time Interaction: When a match is made, a new Chat room becomes available. The Socket.IO client in the React app connects to the backend to enable instantaneous message exchange.
-
-🚧 Known Issues and Fixes
-
-    Issue: Chat messages sometimes fail to deliver instantly on unreliable networks.
-
-        Fix: Ensure your MongoDB instance is running and accessible. Check the console for Socket.IO connection errors (often due to firewall restrictions).
-
-🤝 Acknowledgements
-
-    This project leverages the MERN stack best practices.
-
-    Thanks to the community libraries Socket.IO and Tailwind CSS.
-
-⚖️ Licence
-
-This project is for personal/educational use only. All rights reserved. Commercial use is prohibited.
