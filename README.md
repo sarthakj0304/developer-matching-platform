@@ -4,13 +4,13 @@ An online platform that connects developers with similar interests and skill set
 ## Screenshots
 ### Login window
 
-*(Insert image here — e.g. ![Feed](screenshots/Chat_page_dev_tinder.png))*
+![Feed](screenshots/Chat_page_dev_tinder.png)*
 
 ### 🧑‍💻 Dashboard / Feed  
-*(Insert image here — e.g. ![Feed](screenshots/Feed_page_dev_tinder.png))*
+![Feed](screenshots/Feed_page_dev_tinder.png)*
 
 ### 💬 Chat Window  
-*(Insert image here — e.g. ![Chat](screenshots/Login_Page_dev_tinder.png))*
+![Chat](screenshots/Login_Page_dev_tinder.png)*
 
 
 
